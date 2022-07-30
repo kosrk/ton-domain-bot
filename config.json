@@ -1,0 +1,5 @@
+{
+  "seed": "123",
+  "collection_address": "0:b774d95eb20543f186c06b371ab88ad704f7e256130caf96189368a7d0cb6ccf",
+  "domains": [{"name": "name1","max_bid": 10000},{"name": "name2","max_bid": 20000}]
+}
