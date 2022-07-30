@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	WalletType = wallet.V4R2 // WRITE YOU WALLET TYPE HERE
+	WalletType = wallet.V3R2 // WRITE YOU WALLET TYPE HERE
 )
 
 type Config struct {
@@ -85,12 +85,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to create wallet: %v", err)
 	}
+	log.Printf("You wallet address: %v\n", w.GetAddress().ToHuman(true, false))
 
 	for _, domain := range conf.Domains {
 		addr, err := getItemAddressByTvm(domain.Name, collectionState.Code, collectionState.Data, conf.CollectionAddress)
 		if err != nil {
 			log.Fatalf("unable to get domain %v address: %v", domain.Name, err)
 		}
+		log.Printf("Domain \"%v\" contract address: %v\n", domain.Name, addr.ToHuman(true, false))
 		dom := Domain{Address: addr, Name: domain.Name, MaxBid: domain.MaxBid}
 		worker := Worker{
 			Domain: dom,
@@ -168,7 +170,7 @@ func getItemAddressByTvm(name string, code, data []byte, address tongo.AccountID
 }
 
 func (w Worker) start() {
-	log.Printf("Domain \"%v\" worket started", w.Domain.Name)
+	log.Printf("Domain \"%v\" worker started", w.Domain.Name)
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 		defer cancel()
@@ -245,7 +247,12 @@ func (w Worker) placeBid(auction Auction) error {
 	if bid > w.Domain.MaxBid {
 		return fmt.Errorf("bid limit reached")
 	}
-	return w.pay(bid)
+	err = w.pay(bid)
+	if err != nil {
+		return err
+	}
+	log.Printf("You place new bid %.3f TON for \"%v\"\n", float64(bid)/1_000_000_000, w.Domain.Name)
+	return nil
 }
 
 func (w Worker) pay(amount int64) error {
@@ -256,7 +263,9 @@ func (w Worker) pay(amount int64) error {
 		Bounce:    false,
 		Mode:      1,
 	}
-	res, err := w.Client.RunSmcMethod(context.Background(), 4, w.Wallet.GetAddress(), "seqno", tongo.VmStack{})
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	res, err := w.Client.RunSmcMethod(ctx, 4, w.Wallet.GetAddress(), "seqno", tongo.VmStack{})
 	if err != nil {
 		return fmt.Errorf("unable to get seqno: %v", err)
 	}
@@ -264,7 +273,7 @@ func (w Worker) pay(amount int64) error {
 	if err != nil {
 		return fmt.Errorf("unable to generate transfer message: %v", err)
 	}
-	err = w.Client.SendRawMessage(context.Background(), msg)
+	err = w.Client.SendRawMessage(ctx, msg)
 	if err != nil {
 		return fmt.Errorf("send message error: %v", err)
 	}

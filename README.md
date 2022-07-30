@@ -5,7 +5,7 @@
 ### Description
 
 The main purpose of the bot is to maintain domain bids within the maximum bid.
-You need to fill config file only for those domains that have already deployed!
+You need to fill config file **only for those domains that have already deployed**!
 If domain is not deployed yet buy it from dns.ton.org.
 
 ### How to use
