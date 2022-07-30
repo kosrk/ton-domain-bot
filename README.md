@@ -20,7 +20,7 @@ If domain is not deployed yet buy it from dns.ton.org.
 ### Logic
 
 1. For each domain runs separate worker (with time shift)
-2. Every 5 minutes worker check domain contract and extract: max bid value, who place bid and auction end time
+2. Every 5 minutes worker check domain contract and extract: ```max_bid``` value, ```max_bid_address``` who place bid and auction ```end_time```
 3. If last bid address != you wallet then try to place new bid
-4. New_bid value = 1.051 * prev_bid
-5. If new_bid < wallet_balance and new_bid<max_bid from config - place bid
+4. ```new_bid = 1.051 * prev_bid```
+5. If ```new_bid < wallet_balance``` and ```new_bid < max_bid``` (from config) - place bid
