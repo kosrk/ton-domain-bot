@@ -1,5 +1,7 @@
 ## TON domain bot
 
+## BE CAREFUL! The bot is just beginning to be tested. There may be some bugs.
+
 ### Description
 
 The main purpose of the bot is to maintain domain bids within the maximum bid.
