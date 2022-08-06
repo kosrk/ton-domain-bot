@@ -14,7 +14,7 @@ If domain is not deployed yet buy it from dns.ton.org.
    * collection_address - root resolver address. You send message to root contract when deploy new domain. (use default for mainnet)
    * domains - list of domains and maximum bid (in Grams. TON = 10^9 Grams) for each
 2. Set ```WalletType = wallet.V4R2 // WRITE YOU WALLET TYPE HERE``` you wallet version.
-3. For run TVM you need libs from tongo (https://github.com/startfellows/tongo/tree/master/lib)
+3. For run TVM you need libs from tongo (https://github.com/startfellows/tongo/tree/master/lib) and add path to ENV ```LD_LIBRARY_PATH```
 4. Client connects to mainnet by default, if you need use TESTNET use: ```client, err := liteclient.NewClient(nil)```
 
 ### Logic
