@@ -186,6 +186,10 @@ func (w Worker) start() {
 			time.Sleep(time.Minute)
 			continue
 		}
+		if time.Now().Unix() > auction.EndTime {
+			log.Printf("auction finished for: %v\n", w.Domain.Name)
+			break
+		}
 		if auction.MaxBidAddress.ToRaw() != w.Wallet.GetAddress().ToRaw() {
 			err = w.placeBid(auction)
 			if err != nil {
@@ -260,7 +264,7 @@ func (w Worker) pay(amount int64) error {
 		Recipient: w.Domain.Address,
 		Amount:    tongo.Grams(amount),
 		Comment:   "bid",
-		Bounce:    false,
+		Bounce:    true,
 		Mode:      1,
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
