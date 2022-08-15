@@ -1,4 +1,4 @@
-module github.com/kosrk/domain-bot-private
+module github.com/kosrk/ton-domain-bot
 
 go 1.18
 
